@@ -1,0 +1,15 @@
+{
+    "name": "alloy-backend-demo-app",
+    "version": "1.0.0",
+    "description": "Demo for building a backend for building integrations on Alloy.",
+    "main": "app.js",
+    "scripts": {
+        "start": "nodemon app.js"
+    },
+    "dependencies": {
+        "axios": "^0.21.1",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "nodemon": "^3.1.3"
+    }
+}
