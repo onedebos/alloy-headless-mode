@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { JetBrains_Mono } from "next/font/google";
 import useAlloyHooks from "../useAlloyHooks";
 
