@@ -48,7 +48,7 @@ app.get("/auth-fields", async (req, res) => {
   const appName = req.query.appName; // Get the APP_NAME to integrate with
   try {
     const response = await axios.get(
-      `${BASE_URL}/metadata/credentials/${appName}`, // Request the authfields required for the integration
+      `${BASE_URL}/metadata/credentials/${appName}`, // Request the auth-fields required for the integration
       { headers: { Authorization: `Bearer ${API_KEY}` } } // Pass API key in the headers
     );
     res.json(response.data); // Send req'd auth fields to the client
@@ -58,14 +58,28 @@ app.get("/auth-fields", async (req, res) => {
   }
 });
 
-// Get a credential Id
-app.get("/credentialid", async (req, res) => {
-  const userId = req.query.userId; // Get userId from query parameters
-  const appName = req.query.appName; // Get appName from query parameters
-  const shopifyShopSubdomain = req.query.shopifyShopSubdomain; // Get shopify Shop subdomain from query parameters
+// Get an OAuth URL
+app.get("/oauthurl", async (req, res) => {
+  const { userId, appName, shopSubdomain } = req.query;
+
   try {
     const response = await axios.get(
-      `${BASE_URL}/headless/oauthurl?userId=${userId}&app=${appName}&shopSubdomain=${shopifyShopSubdomain}`, // Request the authfields required for the integration
+      `${BASE_URL}/headless/oauthurl?userId=${userId}&app=${appName}&shopSubdomain=${shopSubdomain}`,
+      { headers: { Authorization: `Bearer ${API_KEY}` } } // Pass API key in the headers
+    );
+    res.json(response.data); // returns the OAuth url to redirect the user to allowing them to grant permission to your app using OAuth
+  } catch (error) {
+    console.error("Error fetching OAuth URL:", error.message); // Log error message
+    res.status(500).json({ error: error.message }); // Send error response
+  }
+});
+
+// Get CredentialID
+app.get("/credentialid", async (req, res) => {
+  const userId = req.query.userId; // Get userId from query parameters
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/users/${userId}/credentials`,
       { headers: { Authorization: `Bearer ${API_KEY}` } } // Pass API key in the headers
     );
     res.json(response.data); // returns the OAuth url to redirect the user to allowing them to grant permission to your app using OAuth
@@ -77,19 +91,19 @@ app.get("/credentialid", async (req, res) => {
 
 // Start installation and Get installationID
 app.post("/startinstallation", async (req, res) => {
-  const userId = req.body.userId; // Get userId from query parameters
-  const credentialId = req.body.credentialId; // Get appName from query parameters
-  const integrationId = req.body.integrationId; // Get shopify Shop subdomain from query parameters
+  const { userId, credentialId, integrationId } = req.body; // Get userId, appName and integrationId from query parameters
+
   try {
     const response = await axios.post(
       `${BASE_URL}/headless/startinstallation`, // Start the installation process
       { userId, credentialId, integrationId },
       { headers: { Authorization: `Bearer ${API_KEY}` } } // Pass API key in the headers
     );
+
     res.json(response.data); // returns the installationID
   } catch (error) {
-    console.error("Error fetching installationID:", error.message); // Log error message
-    res.status(500).json({ error: error.message }); // Send error response
+    console.error("Error fetching installationID:", error); // Log error message
+    res.status(500).json({ error }); // Send error response
   }
 });
 
@@ -98,7 +112,7 @@ app.post("/completeinstallation", async (req, res) => {
   const installationId = req.body.installationId; // Get shopify Shop subdomain from query parameters
   try {
     const response = await axios.post(
-      `${BASE_URL}/headless/startinstallation`, // Start the installation process
+      `${BASE_URL}/headless/completeinstallation`, // Complete the installation process
       { installationId },
       { headers: { Authorization: `Bearer ${API_KEY}` } } // Pass API key in the headers
     );
