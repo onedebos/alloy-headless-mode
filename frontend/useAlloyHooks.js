@@ -14,6 +14,8 @@ const useAlloyHooks = () => {
   const [integrationId, setIntegrationId] = useState(
     "665d974f8466237167bbc4ba"
   );
+  const [installationId, setInstallationId] = useState("");
+  const [additionalAuthFields, setAdditionalAuthFields] = useState(false);
   const [msg, setMsg] = useState("");
 
   const alloy = Alloy();
@@ -95,15 +97,22 @@ const useAlloyHooks = () => {
     }
   };
 
-  const getInstallationlIdAndCompleteInstallation = async () => {
+  const startInstallationAndGetInstallationlId = async () => {
     try {
       const installationIdRes = await axios.post(
         `${BACKEND_SERVER_BASE_URL}/startinstallation`,
         { userId, credentialId, integrationId }
       );
 
-      const installationId = installationIdRes.data.installationId;
+      setAdditionalAuthFields(installationIdRes.data.data);
+      setInstallationId(installationIdRes.data.installationId);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
 
+  const completeInstallation = async () => {
+    try {
       const completeInstallationRes = await axios.post(
         `${BACKEND_SERVER_BASE_URL}/completeinstallation`,
         { installationId }
@@ -124,8 +133,10 @@ const useAlloyHooks = () => {
     getAuthFields,
     getOAuthUrl,
     getCredentialId,
-    getInstallationlIdAndCompleteInstallation,
+    startInstallationAndGetInstallationlId,
     handleShopSubdomainInput,
+    completeInstallation,
+    additionalAuthFields,
     shopSubdomain,
     msg,
     OAuthUrl,

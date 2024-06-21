@@ -91,7 +91,7 @@ app.get("/credentialid", async (req, res) => {
 
 // Start installation and Get installationID
 app.post("/startinstallation", async (req, res) => {
-  const { userId, credentialId, integrationId } = req.body; // Get userId, appName and integrationId from query parameters
+  const { userId, credentialId, integrationId } = req.body; // Get userId, appName and integrationId from the request body
 
   try {
     const response = await axios.post(
@@ -100,6 +100,7 @@ app.post("/startinstallation", async (req, res) => {
       { headers: { Authorization: `Bearer ${API_KEY}` } } // Pass API key in the headers
     );
 
+    console.log(response.data);
     res.json(response.data); // returns the installationID
   } catch (error) {
     console.error("Error fetching installationID:", error); // Log error message

@@ -10,8 +10,10 @@ const Home = () => {
     getAuthFields,
     getOAuthUrl,
     getCredentialId,
-    getInstallationlIdAndCompleteInstallation,
+    startInstallationAndGetInstallationlId,
     handleShopSubdomainInput,
+    completeInstallation,
+    additionalAuthFields,
     credentialId,
     msg,
     OAuthUrl,
@@ -96,20 +98,27 @@ const Home = () => {
 
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            Step 7: Get InstallationID, Start and Complete Installation
+            Step 7: Start installation
           </h2>
           <button
             className="btn mt-2"
-            onClick={getInstallationlIdAndCompleteInstallation}
+            onClick={startInstallationAndGetInstallationlId}
           >
-            Get InstallationID
+            Start Installation
           </button>
+          <p className="text-primary">
+            {additionalAuthFields?.length < 1 &&
+              "No Additional Auth fields req'd"}
+          </p>
         </div>
 
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            Step 8: Final status
+            Step 8: Complete installation
           </h2>
+          <button className="btn mt-2" onClick={completeInstallation}>
+            Complete installation
+          </button>
           <p className="text-primary">{msg}</p>
         </div>
       </div>
